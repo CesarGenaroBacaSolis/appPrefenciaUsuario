@@ -1,80 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:preferenciausuario/src/pages/settings_page.dart';
+import 'package:preferenciausuario/src/shared_prefs/preferencias_usuario.dart';
+import 'package:preferenciausuario/src/widgets/menu_widget.dart';
 
 class HomePage extends StatelessWidget {
   static final String routeName = 'home';
+  final prefs = new PreferenciasUsuario();
 
   @override
   Widget build(BuildContext context) {
+    prefs.ultimaPagina = HomePage.routeName;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Preferencias de usuario'),
+        backgroundColor: (prefs.colorSecundario) ? Colors.red : Colors.green,
       ),
-      drawer: _crearMenu(context),
+      drawer: MenuWidget(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Color secundario'),
+          Text('Color secundario: ${prefs.colorSecundario} '),
           Divider(),
-          Text('Genero'),
+          Text('Genero: ${prefs.genero}'),
           Divider(),
-          Text('Nombre usuario'),
+          Text('Nombre usuario  ${prefs.nombre}'),
           Divider(),
-        ],
-      ),
-    );
-  }
-
-  Drawer _crearMenu(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            child: Text('Mi menu'),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/menu-img.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.pages,
-              color: Colors.blue,
-            ),
-            title: Text('home'),
-            onTap: () =>
-                Navigator.pushReplacementNamed(context, HomePage.routeName),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.ac_unit_rounded,
-              color: Colors.blue,
-            ),
-            title: Text('Pzxczxcages'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.youtube_searched_for,
-              color: Colors.blue,
-            ),
-            title: Text('adsdas'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.settings,
-              color: Colors.blue,
-            ),
-            title: Text('Settings'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, SettingsPage.routeName);
-            },
-          )
         ],
       ),
     );

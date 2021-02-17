@@ -1,16 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:preferenciausuario/src/shared_prefs/preferencias_usuario.dart';
+import 'package:preferenciausuario/src/widgets/menu_widget.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   static final String routeName = 'settings';
+
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool _colorSecundario;
+  int _genero;
+  String _nombre;
+
+  TextEditingController _textEditingController;
+
+  final prefs = new PreferenciasUsuario();
+
+  @override
+  void initState() {
+    super.initState();
+    prefs.ultimaPagina = SettingsPage.routeName;
+    _genero = prefs.genero;
+    _colorSecundario = prefs.colorSecundario;
+    _textEditingController = new TextEditingController(text: _nombre);
+  }
+
+  _setSelectRadio(int valor) async {
+    prefs.genero = valor;
+    _genero = valor;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ajustes'),
+        backgroundColor: (prefs.colorSecundario) ? Colors.red : Colors.green,
       ),
-      body: Center(
-        child: Text('Ajustes page'),
+      drawer: MenuWidget(),
+      body: ListView(
+        children: [
+          Container(
+            padding: EdgeInsets.all(5.0),
+            child: Text(
+              'Settings',
+              style: TextStyle(
+                fontSize: 45.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Divider(),
+          SwitchListTile(
+            value: _colorSecundario,
+            title: Text('Color secundario'),
+            onChanged: (value) {
+              setState(() {
+                _colorSecundario = value;
+                prefs.colorSecundario = value;
+              });
+            },
+          ),
+          RadioListTile(
+            value: 1,
+            title: Text('Masculuini'),
+            groupValue: _genero,
+            onChanged: _setSelectRadio,
+          ),
+          RadioListTile(
+            value: 2,
+            title: Text('Femenino'),
+            groupValue: _genero,
+            onChanged: _setSelectRadio,
+          ),
+          Divider(),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: TextField(
+              controller: _textEditingController,
+              decoration: InputDecoration(
+                  labelText: 'nombre',
+                  helperText: 'Nombre de la persona usando el telefono'),
+              onChanged: (value) {
+                prefs.nombre = value;
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
